@@ -3,12 +3,12 @@ package com.avocarrot.json2view;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -22,7 +22,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by avocarrot on 11/12/2014.
@@ -40,138 +39,107 @@ public class DynamicHelper {
         String id = "";
         for (DynamicProperty dynProp : properties) {
             switch (dynProp.name) {
-                case ID: {
+                case ID:
                     id = dynProp.getValueString();
-                }
-                break;
-                case BACKGROUND: {
+                    break;
+                case BACKGROUND:
                     applyBackground(view, dynProp);
-                }
-                break;
-                case TEXT: {
+                    break;
+                case TEXT:
                     applyText(view, dynProp);
-                }
-                break;
-                case TEXTCOLOR: {
+                    break;
+                case TEXTCOLOR:
                     applyTextColor(view, dynProp);
-                }
-                break;
-                case TEXTSIZE: {
+                    break;
+                case TEXTSIZE:
                     applyTextSize(view, dynProp);
-                }
-                break;
-                case TEXTSTYLE: {
+                    break;
+                case TEXTSTYLE:
                     applyTextStyle(view, dynProp);
-                }
-                break;
-                case PADDING: {
+                    break;
+                case PADDING:
                     applyPadding(view, dynProp);
-                }
-                break;
-                case PADDING_LEFT: {
+                    break;
+                case PADDING_LEFT:
                     applyPadding(view, dynProp, 0);
-                }
-                break;
-                case PADDING_TOP: {
+                    break;
+                case PADDING_TOP:
                     applyPadding(view, dynProp, 1);
-                }
-                break;
-                case PADDING_RIGHT: {
+                    break;
+                case PADDING_RIGHT:
                     applyPadding(view, dynProp, 2);
-                }
-                break;
-                case PADDING_BOTTOM: {
+                    break;
+                case PADDING_BOTTOM:
                     applyPadding(view, dynProp, 3);
-                }
-                break;
-                case MINWIDTH: {
+                    break;
+                case MINWIDTH:
                     applyMinWidth(view, dynProp);
-                }
-                break;
-                case MINHEIGTH: {
+                    break;
+                case MINHEIGTH:
                     applyMinHeight(view, dynProp);
-                }
-                break;
-                case ELLIPSIZE: {
+                    break;
+                case ELLIPSIZE:
                     applyEllipsize(view, dynProp);
-                }
-                break;
-                case MAXLINES: {
+                    break;
+                case MAXLINES:
                     applyMaxLines(view, dynProp);
-                }
-                break;
-                case ORIENTATION: {
+                    break;
+                case ORIENTATION:
                     applyOrientation(view, dynProp);
-                }
-                break;
-                case SUM_WEIGHT: {
+                    break;
+                case SUM_WEIGHT:
                     applyWeightSum(view, dynProp);
-                }
-                break;
-                case GRAVITY: {
+                    break;
+                case GRAVITY:
                     applyGravity(view, dynProp);
-                }
-                break;
-                case SRC: {
+                    break;
+                case SRC:
                     applySrc(view, dynProp);
-                }
-                break;
-                case SCALETYPE: {
+                    break;
+                case SCALETYPE:
                     applyScaleType(view, dynProp);
-                }
-                break;
-                case ADJUSTVIEWBOUNDS: {
+                    break;
+                case ADJUSTVIEWBOUNDS:
                     applyAdjustBounds(view, dynProp);
-                }
-                break;
-                case DRAWABLELEFT: {
+                    break;
+                case DRAWABLELEFT:
                     applyCompoundDrawable(view, dynProp, 0);
-                }
-                break;
-                case DRAWABLETOP: {
+                    break;
+                case DRAWABLETOP:
                     applyCompoundDrawable(view, dynProp, 1);
-                }
-                break;
-                case DRAWABLERIGHT: {
+                    break;
+                case DRAWABLERIGHT:
                     applyCompoundDrawable(view, dynProp, 2);
-                }
-                break;
-                case DRAWABLEBOTTOM: {
+                    break;
+                case DRAWABLEBOTTOM:
                     applyCompoundDrawable(view, dynProp, 3);
-                }
-                break;
-                case ENABLED: {
+                    break;
+                case ENABLED:
                     applyEnabled(view, dynProp);
-                }
-                break;
-                case SELECTED: {
+                    break;
+                case SELECTED:
                     applySelected(view, dynProp);
-                }
-                break;
-                case CLICKABLE: {
+                    break;
+                case CLICKABLE:
                     applyClickable(view, dynProp);
-                }
-                break;
-                case SCALEX: {
+                    break;
+                case SCALEX:
                     applyScaleX(view, dynProp);
-                }
-                break;
-                case SCALEY: {
+                    break;
+                case SCALEY:
                     applyScaleY(view, dynProp);
-                }
-                break;
-                case TAG: {
+                    break;
+                case TAG:
                     applyTag(view, dynProp);
-                }
-                break;
-                case FUNCTION: {
+                    break;
+                case FUNCTION:
                     applyFunction(view, dynProp);
-                }
-                break;
-                case VISIBILITY:{
+                    break;
+                case VISIBILITY:
                     applyVisibility(view, dynProp);
-                }
-                break;
+                    break;
+                default:
+                    break;
             }
         }
         return id;
@@ -186,203 +154,197 @@ public class DynamicHelper {
      * @param ids        : hashmap of ids <String, Integer> (string as setted in json, int that we use in layout)
      */
     public static void applyLayoutProperties(View view, List<DynamicProperty> properties, ViewGroup viewGroup, HashMap<String, Integer> ids) {
-        if (viewGroup == null)
+        if (viewGroup == null) {
             return;
+        }
         ViewGroup.LayoutParams params = createLayoutParams(viewGroup);
-
         for (DynamicProperty dynProp : properties) {
-            try {
-                switch (dynProp.name) {
-                    case LAYOUT_HEIGHT: {
-                        params.height = dynProp.getValueInt();
+            switch (dynProp.name) {
+                case LAYOUT_HEIGHT:
+                    params.height = dynProp.getValueInt();
+                    break;
+                case LAYOUT_WIDTH:
+                    params.width = dynProp.getValueInt();
+                    break;
+                case LAYOUT_MARGIN:
+                    if (params instanceof ViewGroup.MarginLayoutParams) {
+                        ViewGroup.MarginLayoutParams p = ((ViewGroup.MarginLayoutParams) params);
+                        p.bottomMargin = p.topMargin = p.leftMargin = p.rightMargin = dynProp.getValueInt();
                     }
                     break;
-                    case LAYOUT_WIDTH: {
-                        params.width = dynProp.getValueInt();
+                case LAYOUT_MARGINLEFT:
+                    if (params instanceof ViewGroup.MarginLayoutParams) {
+                        ((ViewGroup.MarginLayoutParams) params).leftMargin = dynProp.getValueInt();
                     }
                     break;
-                    case LAYOUT_MARGIN: {
-                        if (params instanceof ViewGroup.MarginLayoutParams) {
-                            ViewGroup.MarginLayoutParams p = ((ViewGroup.MarginLayoutParams) params);
-                            p.bottomMargin = p.topMargin = p.leftMargin = p.rightMargin = dynProp.getValueInt();
-                        }
+                case LAYOUT_MARGINTOP:
+                    if (params instanceof ViewGroup.MarginLayoutParams) {
+                        ((ViewGroup.MarginLayoutParams) params).topMargin = dynProp.getValueInt();
                     }
                     break;
-                    case LAYOUT_MARGINLEFT: {
-                        if (params instanceof ViewGroup.MarginLayoutParams) {
-                            ((ViewGroup.MarginLayoutParams) params).leftMargin = dynProp.getValueInt();
-                        }
+                case LAYOUT_MARGINRIGHT:
+                    if (params instanceof ViewGroup.MarginLayoutParams) {
+                        ((ViewGroup.MarginLayoutParams) params).rightMargin = dynProp.getValueInt();
                     }
                     break;
-                    case LAYOUT_MARGINTOP: {
-                        if (params instanceof ViewGroup.MarginLayoutParams) {
-                            ((ViewGroup.MarginLayoutParams) params).topMargin = dynProp.getValueInt();
-                        }
+                case LAYOUT_MARGINBOTTOM:
+                    if (params instanceof ViewGroup.MarginLayoutParams) {
+                        ((ViewGroup.MarginLayoutParams) params).bottomMargin = dynProp.getValueInt();
                     }
                     break;
-                    case LAYOUT_MARGINRIGHT: {
-                        if (params instanceof ViewGroup.MarginLayoutParams) {
-                            ((ViewGroup.MarginLayoutParams) params).rightMargin = dynProp.getValueInt();
-                        }
+                case LAYOUT_ABOVE:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ABOVE, ids.get(dynProp.getValueString()));
                     }
                     break;
-                    case LAYOUT_MARGINBOTTOM: {
-                        if (params instanceof ViewGroup.MarginLayoutParams) {
-                            ((ViewGroup.MarginLayoutParams) params).bottomMargin = dynProp.getValueInt();
-                        }
+                case LAYOUT_BELOW:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.BELOW, ids.get(dynProp.getValueString()));
                     }
                     break;
-                    case LAYOUT_ABOVE: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ABOVE, ids.get(dynProp.getValueString()));
+                case LAYOUT_TOLEFTOF:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.LEFT_OF, ids.get(dynProp.getValueString()));
                     }
                     break;
-                    case LAYOUT_BELOW: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.BELOW, ids.get(dynProp.getValueString()));
+                case LAYOUT_TORIGHTOF:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.RIGHT_OF, ids.get(dynProp.getValueString()));
                     }
                     break;
-                    case LAYOUT_TOLEFTOF: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.LEFT_OF, ids.get(dynProp.getValueString()));
+                case LAYOUT_TOSTARTOF:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.START_OF, ids.get(dynProp.getValueString()));
                     }
                     break;
-                    case LAYOUT_TORIGHTOF: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.RIGHT_OF, ids.get(dynProp.getValueString()));
+                case LAYOUT_TOENDOF:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.END_OF, ids.get(dynProp.getValueString()));
                     }
                     break;
-                    case LAYOUT_TOSTARTOF: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.START_OF, ids.get(dynProp.getValueString()));
+                case LAYOUT_ALIGNBASELINE:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_BASELINE, ids.get(dynProp.getValueString()));
                     }
                     break;
-                    case LAYOUT_TOENDOF: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.END_OF, ids.get(dynProp.getValueString()));
+                case LAYOUT_ALIGNLEFT:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_LEFT, ids.get(dynProp.getValueString()));
                     }
                     break;
-                    case LAYOUT_ALIGNBASELINE: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_BASELINE, ids.get(dynProp.getValueString()));
+                case LAYOUT_ALIGNTOP:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_TOP, ids.get(dynProp.getValueString()));
                     }
                     break;
-                    case LAYOUT_ALIGNLEFT: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_LEFT, ids.get(dynProp.getValueString()));
+                case LAYOUT_ALIGNRIGHT:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_RIGHT, ids.get(dynProp.getValueString()));
                     }
                     break;
-                    case LAYOUT_ALIGNTOP: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_TOP, ids.get(dynProp.getValueString()));
+                case LAYOUT_ALIGNBOTTOM:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_BOTTOM, ids.get(dynProp.getValueString()));
                     }
                     break;
-                    case LAYOUT_ALIGNRIGHT: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_RIGHT, ids.get(dynProp.getValueString()));
+                case LAYOUT_ALIGNSTART:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_START, ids.get(dynProp.getValueString()));
                     }
                     break;
-                    case LAYOUT_ALIGNBOTTOM: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_BOTTOM, ids.get(dynProp.getValueString()));
+                case LAYOUT_ALIGNEND: {
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_END, ids.get(dynProp.getValueString()));
                     }
-                    break;
-                    case LAYOUT_ALIGNSTART: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_START, ids.get(dynProp.getValueString()));
-                    }
-                    break;
-                    case LAYOUT_ALIGNEND: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_END, ids.get(dynProp.getValueString()));
-                    }
-                    break;
-                    case LAYOUT_ALIGNWITHPARENTIFMISSING: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).alignWithParent = dynProp.getValueBoolean();
-                    }
-                    break;
-                    case LAYOUT_ALIGNPARENTTOP: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                    }
-                    break;
-                    case LAYOUT_ALIGNPARENTBOTTOM: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-                    }
-                    break;
-                    case LAYOUT_ALIGNPARENTLEFT: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                    }
-                    break;
-                    case LAYOUT_ALIGNPARENTRIGHT: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                    }
-                    break;
-                    case LAYOUT_ALIGNPARENTSTART: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_PARENT_START);
-                    }
-                    break;
-                    case LAYOUT_ALIGNPARENTEND: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_PARENT_END);
-                    }
-                    break;
-                    case LAYOUT_CENTERHORIZONTAL: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.CENTER_HORIZONTAL);
-                    }
-                    break;
-                    case LAYOUT_CENTERVERTICAL: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.CENTER_VERTICAL);
-                    }
-                    break;
-                    case LAYOUT_CENTERINPARENT: {
-                        if (params instanceof RelativeLayout.LayoutParams)
-                            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.CENTER_IN_PARENT);
-                    }
-                    break;
-                    case LAYOUT_GRAVITY: {
-                        switch (dynProp.type) {
-                            case INTEGER: {
-                                if (params instanceof LinearLayout.LayoutParams)
-                                    ((LinearLayout.LayoutParams) params).gravity = dynProp.getValueInt();
-                            }
-                            break;
-                            case STRING: {
-                                if (params instanceof LinearLayout.LayoutParams)
-                                    ((LinearLayout.LayoutParams) params).gravity = (Integer) dynProp.getValueInt(Gravity.class, dynProp.getValueString().toUpperCase());
-                            }
-                            break;
-                        }
-                    }
-                    break;
-                    case LAYOUT_WEIGHT: {
-                        switch (dynProp.type) {
-                            case FLOAT: {
-                                if (params instanceof LinearLayout.LayoutParams)
-                                    ((LinearLayout.LayoutParams) params).weight = dynProp.getValueFloat();
-                            }
-                            break;
-                        }
-                    }
-                    break;
                 }
-            } catch (Exception e) {
+                break;
+                case LAYOUT_ALIGNWITHPARENTIFMISSING:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).alignWithParent = dynProp.getValueBoolean();
+                    }
+                    break;
+                case LAYOUT_ALIGNPARENTTOP:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                    }
+                    break;
+                case LAYOUT_ALIGNPARENTBOTTOM:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    }
+                    break;
+                case LAYOUT_ALIGNPARENTLEFT:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                    }
+                    break;
+                case LAYOUT_ALIGNPARENTRIGHT:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    }
+                    break;
+                case LAYOUT_ALIGNPARENTSTART:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_PARENT_START);
+                    }
+                    break;
+                case LAYOUT_ALIGNPARENTEND:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_PARENT_END);
+                    }
+                    break;
+                case LAYOUT_CENTERHORIZONTAL:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.CENTER_HORIZONTAL);
+                    }
+                    break;
+                case LAYOUT_CENTERVERTICAL:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.CENTER_VERTICAL);
+                    }
+                    break;
+                case LAYOUT_CENTERINPARENT:
+                    if (params instanceof RelativeLayout.LayoutParams) {
+                        ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.CENTER_IN_PARENT);
+                    }
+                    break;
+                case LAYOUT_GRAVITY:
+                    switch (dynProp.type) {
+                        case INTEGER:
+                            if (params instanceof LinearLayout.LayoutParams) {
+                                ((LinearLayout.LayoutParams) params).gravity = dynProp.getValueInt();
+                            }
+                            break;
+                        case STRING:
+                            if (params instanceof LinearLayout.LayoutParams) {
+                                ((LinearLayout.LayoutParams) params).gravity = (Integer) dynProp.getValueInt(Gravity.class, dynProp.getValueString().toUpperCase());
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case LAYOUT_WEIGHT:
+                    switch (dynProp.type) {
+                        case FLOAT:
+                            if (params instanceof LinearLayout.LayoutParams) {
+                                ((LinearLayout.LayoutParams) params).weight = dynProp.getValueFloat();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                default:
+                    break;
             }
         }
-
         view.setLayoutParams(params);
     }
 
     public static ViewGroup.LayoutParams createLayoutParams(ViewGroup viewGroup) {
         ViewGroup.LayoutParams params = null;
-        if (viewGroup!=null) {
+        if (viewGroup != null) {
             try {
                 /* find parent viewGroup and create LayoutParams of that class */
                 Class layoutClass = viewGroup.getClass();
@@ -412,31 +374,32 @@ public class DynamicHelper {
      * - BASE64 => convert base64 to bitmap and apply in view
      */
     public static void applyBackground(View view, DynamicProperty property) {
-        if (view != null) {
-            switch (property.type) {
-                case COLOR: {
-                    view.setBackgroundColor(property.getValueColor());
+        if (view == null) {
+            return;
+        }
+        switch (property.type) {
+            case COLOR:
+                view.setBackgroundColor(property.getValueColor());
+                break;
+            case REF:
+                view.setBackgroundResource(getDrawableId(view.getContext(), property.getValueString()));
+                break;
+            case BASE64:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    view.setBackground(property.getValueBitmapDrawable());
+                } else {
+                    view.setBackgroundDrawable(property.getValueBitmapDrawable());
                 }
                 break;
-                case REF: {
-                    view.setBackgroundResource(getDrawableId(view.getContext(), property.getValueString()));
+            case DRAWABLE:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    view.setBackground(property.getValueGradientDrawable());
+                } else {
+                    view.setBackgroundDrawable(property.getValueGradientDrawable());
                 }
                 break;
-                case BASE64: {
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
-                        view.setBackground(property.getValueBitmapDrawable());
-                    else
-                        view.setBackgroundDrawable(property.getValueBitmapDrawable());
-                }
+            default:
                 break;
-                case DRAWABLE: {
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
-                        view.setBackground(property.getValueGradientDrawable());
-                    else
-                        view.setBackgroundDrawable(property.getValueGradientDrawable());
-                }
-                break;
-            }
         }
     }
 
@@ -444,14 +407,16 @@ public class DynamicHelper {
      * apply padding in view
      */
     public static void applyPadding(View view, DynamicProperty property) {
-        if (view != null) {
-            switch (property.type) {
-                case DIMEN: {
-                    int padding = property.getValueInt();
-                    view.setPadding(padding, padding, padding, padding);
-                }
+        if (view == null) {
+            return;
+        }
+        switch (property.type) {
+            case DIMEN:
+                int padding = property.getValueInt();
+                view.setPadding(padding, padding, padding, padding);
                 break;
-            }
+            default:
+                break;
         }
     }
 
@@ -459,20 +424,22 @@ public class DynamicHelper {
      * apply padding in view
      */
     public static void applyPadding(View view, DynamicProperty property, int position) {
-        if (view != null) {
-            switch (property.type) {
-                case DIMEN: {
-                    int[] padding = new int[] {
-                      view.getPaddingLeft(),
-                      view.getPaddingTop(),
-                      view.getPaddingRight(),
-                      view.getPaddingBottom()
-                    };
-                    padding[position] = property.getValueInt();
-                    view.setPadding(padding[0], padding[1], padding[2], padding[3]);
-                }
+        if (view == null) {
+            return;
+        }
+        switch (property.type) {
+            case DIMEN:
+                int[] padding = new int[]{
+                        view.getPaddingLeft(),
+                        view.getPaddingTop(),
+                        view.getPaddingRight(),
+                        view.getPaddingBottom()
+                };
+                padding[position] = property.getValueInt();
+                view.setPadding(padding[0], padding[1], padding[2], padding[3]);
                 break;
-            }
+            default:
+                break;
         }
     }
 
@@ -502,13 +469,15 @@ public class DynamicHelper {
      * apply enabled in view
      */
     public static void applyEnabled(View view, DynamicProperty property) {
-        if (view != null) {
-            switch (property.type) {
-                case BOOLEAN: {
-                    view.setEnabled(property.getValueBoolean());
-                }
+        if (view == null) {
+            return;
+        }
+        switch (property.type) {
+            case BOOLEAN:
+                view.setEnabled(property.getValueBoolean());
                 break;
-            }
+            default:
+                break;
         }
     }
 
@@ -516,26 +485,31 @@ public class DynamicHelper {
      * apply selected in view
      */
     public static void applySelected(View view, DynamicProperty property) {
-        if (view != null) {
-            switch (property.type) {
-                case BOOLEAN: {
-                    view.setSelected(property.getValueBoolean());
-                }
+        if (view == null) {
+            return;
+        }
+        switch (property.type) {
+            case BOOLEAN:
+                view.setSelected(property.getValueBoolean());
                 break;
-            }
+            default:
+                break;
         }
     }
+
     /**
      * apply clickable in view
      */
     public static void applyClickable(View view, DynamicProperty property) {
-        if (view != null) {
-            switch (property.type) {
-                case BOOLEAN: {
-                    view.setClickable(property.getValueBoolean());
-                }
+        if (view == null) {
+            return;
+        }
+        switch (property.type) {
+            case BOOLEAN:
+                view.setClickable(property.getValueBoolean());
                 break;
-            }
+            default:
+                break;
         }
     }
 
@@ -543,13 +517,16 @@ public class DynamicHelper {
      * apply selected in view
      */
     public static void applyScaleX(View view, DynamicProperty property) {
-        if (view != null) {
-            switch (property.type) {
-                case BOOLEAN: {
-                    view.setScaleX(property.getValueFloat());
-                }
-                break;
+        if (view == null) {
+            return;
+        }
+        switch (property.type) {
+            case BOOLEAN: {
+                view.setScaleX(property.getValueFloat());
             }
+            break;
+            default:
+                break;
         }
     }
 
@@ -557,40 +534,47 @@ public class DynamicHelper {
      * apply selected in view
      */
     public static void applyScaleY(View view, DynamicProperty property) {
-        if (view != null) {
-            switch (property.type) {
-                case BOOLEAN: {
-                    view.setScaleY(property.getValueFloat());
-                }
-                break;
+        if (view == null) {
+            return;
+        }
+        switch (property.type) {
+            case BOOLEAN: {
+                view.setScaleY(property.getValueFloat());
             }
+            break;
+            default:
+                break;
         }
     }
 
     /**
-     *  apply visibility in view
+     * apply visibility in view
      */
     private static void applyVisibility(View view, DynamicProperty property) {
-        if (view != null) {
-            switch (property.type) {
-                case STRING: {
-                    switch (property.getValueString()){
-                        case "gone":{
-                            view.setVisibility(View.GONE);
-                        }
-                        break;
-                        case "visible":{
-                            view.setVisibility(View.VISIBLE);
-                        }
-                        break;
-                        case "invisible":{
-                            view.setVisibility(View.INVISIBLE);
-                        }
-                        break;
+        if (view == null) {
+            return;
+        }
+        switch (property.type) {
+            case STRING:
+                switch (property.getValueString()) {
+                    case "gone": {
+                        view.setVisibility(View.GONE);
                     }
+                    break;
+                    case "visible": {
+                        view.setVisibility(View.VISIBLE);
+                    }
+                    break;
+                    case "invisible": {
+                        view.setVisibility(View.INVISIBLE);
+                    }
+                    break;
+                    default:
+                        break;
                 }
                 break;
-            }
+            default:
+                break;
         }
     }
 
@@ -604,14 +588,14 @@ public class DynamicHelper {
     public static void applyText(View view, DynamicProperty property) {
         if (view instanceof TextView) {
             switch (property.type) {
-                case STRING: {
+                case STRING:
                     ((TextView) view).setText(property.getValueString());
-                }
-                break;
-                case REF: {
+                    break;
+                case REF:
                     ((TextView) view).setText(getStringId(view.getContext(), property.getValueString()));
-                }
-                break;
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -622,10 +606,11 @@ public class DynamicHelper {
     public static void applyTextColor(View view, DynamicProperty property) {
         if (view instanceof TextView) {
             switch (property.type) {
-                case COLOR: {
+                case COLOR:
                     ((TextView) view).setTextColor(property.getValueColor());
-                }
-                break;
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -636,23 +621,26 @@ public class DynamicHelper {
     public static void applyTextSize(View view, DynamicProperty property) {
         if (view instanceof TextView) {
             switch (property.type) {
-                case DIMEN: {
+                case DIMEN:
                     ((TextView) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, property.getValueFloat());
-                }
-                break;
+                    break;
+                default:
+                    break;
             }
         }
     }
+
     /**
      * apply the textStyle in textView
      */
     public static void applyTextStyle(View view, DynamicProperty property) {
         if (view instanceof TextView) {
             switch (property.type) {
-                case INTEGER: {
+                case INTEGER:
                     ((TextView) view).setTypeface(null, property.getValueInt());
-                }
-                break;
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -683,14 +671,14 @@ public class DynamicHelper {
     public static void applyGravity(View view, DynamicProperty property) {
         if (view instanceof TextView) {
             switch (property.type) {
-                case INTEGER: {
+                case INTEGER:
                     ((TextView) view).setGravity(property.getValueInt());
-                }
-                break;
-                case STRING: {
+                    break;
+                case STRING:
                     ((TextView) view).setGravity((Integer) property.getValueInt(Gravity.class, property.getValueString().toUpperCase()));
-                }
-                break;
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -706,20 +694,20 @@ public class DynamicHelper {
             TextView textView = (TextView) view;
             Drawable[] d = textView.getCompoundDrawables();
             switch (property.type) {
-                case REF: {
+                case REF:
                     try {
                         d[position] = view.getContext().getResources().getDrawable(getDrawableId(view.getContext(), property.getValueString()));
-                    } catch (Exception e) {}
-                }
-                break;
-                case BASE64: {
+                    } catch (Exception e) {
+                    }
+                    break;
+                case BASE64:
                     d[position] = property.getValueBitmapDrawable();
-                }
-                break;
-                case DRAWABLE: {
+                    break;
+                case DRAWABLE:
                     d[position] = property.getValueGradientDrawable();
-                }
-                break;
+                    break;
+                default:
+                    break;
             }
             textView.setCompoundDrawablesWithIntrinsicBounds(d[0], d[1], d[2], d[3]);
         }
@@ -736,14 +724,14 @@ public class DynamicHelper {
     public static void applySrc(View view, DynamicProperty property) {
         if (view instanceof ImageView) {
             switch (property.type) {
-                case REF: {
+                case REF:
                     ((ImageView) view).setImageResource(getDrawableId(view.getContext(), property.getValueString()));
-                }
-                break;
-                case BASE64: {
+                    break;
+                case BASE64:
                     ((ImageView) view).setImageBitmap(property.getValueBitmap());
-                }
-                break;
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -754,10 +742,11 @@ public class DynamicHelper {
     public static void applyScaleType(View view, DynamicProperty property) {
         if (view instanceof ImageView) {
             switch (property.type) {
-                case STRING: {
+                case STRING:
                     ((ImageView) view).setScaleType(ImageView.ScaleType.valueOf(property.getValueString().toUpperCase()));
-                }
-                break;
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -768,10 +757,11 @@ public class DynamicHelper {
     public static void applyAdjustBounds(View view, DynamicProperty property) {
         if (view instanceof ImageView) {
             switch (property.type) {
-                case BOOLEAN: {
+                case BOOLEAN:
                     ((ImageView) view).setAdjustViewBounds(property.getValueBoolean());
-                }
-                break;
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -786,14 +776,14 @@ public class DynamicHelper {
     public static void applyOrientation(View view, DynamicProperty property) {
         if (view instanceof LinearLayout) {
             switch (property.type) {
-                case INTEGER: {
+                case INTEGER:
                     ((LinearLayout) view).setOrientation(property.getValueInt() == 0 ? LinearLayout.HORIZONTAL : LinearLayout.VERTICAL);
-                }
-                break;
-                case STRING: {
+                    break;
+                case STRING:
                     ((LinearLayout) view).setOrientation(property.getValueString().equalsIgnoreCase("HORIZONTAL") ? LinearLayout.HORIZONTAL : LinearLayout.VERTICAL);
-                }
-                break;
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -829,33 +819,33 @@ public class DynamicHelper {
 
                 Class[] argsClass;
                 Object[] argsValue;
-                if (args==null) {
+                if (args == null) {
                     argsClass = new Class[0];
                     argsValue = new Object[0];
                 } else {
                     try {
                         List<Class> classList = new ArrayList<>();
-                        List<Object> valueList= new ArrayList<>();
+                        List<Object> valueList = new ArrayList<>();
 
-                        int i=0;
+                        int i = 0;
                         int count = args.length();
-                        for (; i<count ; i++) {
+                        for (; i < count; i++) {
                             JSONObject argJsonObj = args.getJSONObject(i);
                             boolean isPrimitive = argJsonObj.has("primitive");
-                            String className = argJsonObj.getString( isPrimitive ? "primitive" : "class");
+                            String className = argJsonObj.getString(isPrimitive ? "primitive" : "class");
                             String classFullName = className;
                             if (!classFullName.contains("."))
                                 classFullName = "java.lang." + className;
                             Class clazz = Class.forName(classFullName);
                             if (isPrimitive) {
-                                Class primitiveType = (Class)clazz.getField("TYPE").get(null);
-                                classList.add( primitiveType );
+                                Class primitiveType = (Class) clazz.getField("TYPE").get(null);
+                                classList.add(primitiveType);
                             } else {
-                                classList.add( clazz );
+                                classList.add(clazz);
                             }
 
                             try {
-                                valueList.add( getFromJSON(argJsonObj, "value", clazz) );
+                                valueList.add(getFromJSON(argJsonObj, "value", clazz));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -881,7 +871,6 @@ public class DynamicHelper {
         }
 
     }
-
 
 
     /**
@@ -932,7 +921,7 @@ public class DynamicHelper {
      * convert densityPixel to scaledDensityPixel
      */
     public static float dpToSp(float dp) {
-        return (int) ( dpToPx(dp) / Resources.getSystem().getDisplayMetrics().scaledDensity);
+        return (int) (dpToPx(dp) / Resources.getSystem().getDisplayMetrics().scaledDensity);
     }
 
     /**
@@ -954,8 +943,9 @@ public class DynamicHelper {
                 final DynamicViewId dynamicViewIdAnnotation = field.getAnnotation(DynamicViewId.class);
                 /* get the Id of the view. if it is not set in annotation user the variable name */
                 String id = dynamicViewIdAnnotation.id();
-                if (id.equalsIgnoreCase(""))
+                if (id.equalsIgnoreCase("")) {
                     id = field.getName();
+                }
                 if (idsMap.containsKey(id)) {
                     try {
                         /* get the view Id from the Hashmap and make the connection to the real View */
@@ -978,15 +968,15 @@ public class DynamicHelper {
     }
 
     private static Object getFromJSON(JSONObject json, String name, Class clazz) throws JSONException {
-        if ((clazz == Integer.class)||(clazz == Integer.TYPE)) {
+        if ((clazz == Integer.class) || (clazz == Integer.TYPE)) {
             return json.getInt(name);
-        } else if ((clazz == Boolean.class)||(clazz == Boolean.TYPE)) {
+        } else if ((clazz == Boolean.class) || (clazz == Boolean.TYPE)) {
             return json.getBoolean(name);
-        } else if ((clazz == Double.class)||(clazz == Double.TYPE)) {
+        } else if ((clazz == Double.class) || (clazz == Double.TYPE)) {
             return json.getDouble(name);
-        } else if ((clazz == Float.class)||(clazz == Float.TYPE)) {
-            return (float)json.getDouble(name);
-        } else if ((clazz == Long.class)||(clazz == Long.TYPE)) {
+        } else if ((clazz == Float.class) || (clazz == Float.TYPE)) {
+            return (float) json.getDouble(name);
+        } else if ((clazz == Long.class) || (clazz == Long.TYPE)) {
             return json.getLong(name);
         } else if (clazz == String.class) {
             return json.getString(name);
@@ -1002,7 +992,7 @@ public class DynamicHelper {
         try {
             Class.forName(className);
             return true;
-        } catch(ClassNotFoundException ex) {
+        } catch (ClassNotFoundException ex) {
             return false;
         }
     }
