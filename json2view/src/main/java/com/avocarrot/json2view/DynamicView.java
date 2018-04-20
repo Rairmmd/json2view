@@ -20,8 +20,8 @@ import java.util.List;
  */
 public class DynamicView {
 
-    static int mCurrentId = 13;
-    static int INTERNAL_TAG_ID = 0x7f020000;
+    private static int CURRENT_ID = 13;
+    private static int INTERNAL_TAG_ID = 0x7f020000;
 
     /**
      * @param jsonObject  : json object
@@ -39,23 +39,19 @@ public class DynamicView {
      * @return the view that created
      */
     public static View createView(Context context, JSONObject jsonObject, ViewGroup parent, Class holderClass) {
-
-        if (jsonObject == null)
+        if (jsonObject == null) {
             return null;
-
+        }
         HashMap<String, Integer> ids = new HashMap<>();
-
         View container = createViewInternal(context, jsonObject, parent, ids);
-
-        if (container == null)
+        if (container == null) {
             return null;
-
-        if (container.getTag(INTERNAL_TAG_ID) != null)
+        }
+        if (container.getTag(INTERNAL_TAG_ID) != null) {
             DynamicHelper.applyLayoutProperties(container, (List<DynamicProperty>) container.getTag(INTERNAL_TAG_ID), parent, ids);
-
+        }
         /* clear tag from properties */
         container.setTag(INTERNAL_TAG_ID, null);
-
         if (holderClass != null) {
             try {
                 Object holder = holderClass.getConstructor().newInstance();
@@ -72,9 +68,7 @@ public class DynamicView {
             }
 
         }
-
         return container;
-
     }
 
     /**
@@ -102,11 +96,8 @@ public class DynamicView {
      * @return the view that created
      */
     private static View createViewInternal(Context context, JSONObject jsonObject, ViewGroup parent, HashMap<String, Integer> ids) {
-
         View view = null;
-
         ArrayList<DynamicProperty> properties;
-
         try {
             /* Create the View Object. If not full package is available try to create a view from android.widget */
             String widget = jsonObject.getString("widget");
@@ -129,42 +120,37 @@ public class DynamicView {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-
-        if (view == null) return null;
-
+        if (view == null) {
+            return null;
+        }
         try {
-
             /* default Layout in case the user not set it */
             ViewGroup.LayoutParams params = DynamicHelper.createLayoutParams(parent);
             view.setLayoutParams(params);
-
             /* iterrate json and get all properties in array */
             properties = new ArrayList<>();
             JSONArray jArray = jsonObject.getJSONArray("properties");
             if (jArray != null) {
                 for (int i = 0; i < jArray.length(); i++) {
                     DynamicProperty p = new DynamicProperty(jArray.getJSONObject(i));
-                    if (p.isValid())
+                    if (p.isValid()) {
                         properties.add(p);
+                    }
                 }
             }
-
             /* keep properties obj as a tag */
             view.setTag(INTERNAL_TAG_ID, properties);
-
             /* add and integer as a universal id  and keep it in a hashmap */
             String id = DynamicHelper.applyStyleProperties(view, properties);
             if (!TextUtils.isEmpty(id)) {
                 /* to target older versions we cannot use View.generateViewId();  */
-                ids.put(id, mCurrentId);
-                view.setId(mCurrentId);
-                mCurrentId++;
+                ids.put(id, CURRENT_ID);
+                view.setId(CURRENT_ID);
+                CURRENT_ID++;
             }
-
             /* if view is type of ViewGroup check for its children view in json */
             if (view instanceof ViewGroup) {
                 ViewGroup viewGroup = (ViewGroup) view;
-
                 /* parse the aray to get the children views */
                 List<View> views = new ArrayList<>();
                 JSONArray jViews = jsonObject.optJSONArray("views");
@@ -191,9 +177,7 @@ public class DynamicView {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         return view;
-
     }
 
 }

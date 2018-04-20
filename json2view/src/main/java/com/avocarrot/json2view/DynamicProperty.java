@@ -253,9 +253,8 @@ public class DynamicProperty {
      * @return search in clazz of possible variable name (varName) and return its value
      */
     public Object getValueInt(Class clazz, String varName) {
-        Field fieldRequested = null;
         try {
-            fieldRequested = clazz.getField(varName);
+            Field fieldRequested = clazz.getField(varName);
             if (fieldRequested != null) {
                 return fieldRequested.get(clazz);
             }
@@ -275,7 +274,6 @@ public class DynamicProperty {
     /**
      * next function just cast value and return the object
      **/
-
     public int getValueColor() {
         if (type == TYPE.COLOR) {
             return Integer.class.cast(value);
