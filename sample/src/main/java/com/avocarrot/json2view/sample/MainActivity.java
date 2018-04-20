@@ -44,7 +44,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         } else {
             Log.e("Json2View", "Could not load valid json file");
         }
-
     }
 
     @Override
